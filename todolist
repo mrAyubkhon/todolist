@@ -1,0 +1,105 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+struct Task {
+    std::string description;
+    std::string dueDate;
+    bool completed;
+
+    Task(const std::string& desc, const std::string& date)
+        : description(desc), dueDate(date), completed(false) {}
+};
+
+std::vector<Task> tasks;
+
+
+void addTask() {
+    std::string description, dueDate;
+    std::cout << "Enter task description: ";
+    std::cin.ignore();
+    std::getline(std::cin, description);
+    std::cout << "Enter due date (e.g., MM/DD/YYYY): ";
+    std::cin >> dueDate;
+
+    tasks.push_back(Task(description, dueDate));
+    std::cout << "Task added successfully.\n";
+}
+
+
+void markTaskCompleted() {
+    int taskIndex;
+    std::cout << "Enter the index of the task to mark as completed: ";
+    std::cin >> taskIndex;
+
+    if (taskIndex >= 0 && taskIndex < tasks.size()) {
+        tasks[taskIndex].completed = true;
+        std::cout << "Task marked as completed.\n";
+    } else {
+        std::cout << "Invalid task index.\n";
+    }
+}
+
+
+void removeTask() {
+    int taskIndex;
+    std::cout << "Enter the index of the task to remove: ";
+    std::cin >> taskIndex;
+
+    if (taskIndex >= 0 && taskIndex < tasks.size()) {
+        tasks.erase(tasks.begin() + taskIndex);
+        std::cout << "Task removed successfully.\n";
+    } else {
+        std::cout << "Invalid task index.\n";
+    }
+}
+
+
+void viewTasks() {
+    std::cout << "To-Do List:\n";
+    std::sort(tasks.begin(), tasks.end(), [](const Task& a, const Task& b) {
+        return a.dueDate < b.dueDate;
+    });
+
+    for (size_t i = 0; i < tasks.size(); i++) {
+        std::cout << "[" << i << "] " << (tasks[i].completed ? "[X] " : "[ ] ")
+                  << tasks[i].description << " (Due: " << tasks[i].dueDate << ")\n";
+    }
+}
+
+int main() {
+    int choice;
+
+    while (true) {
+        std::cout << "\nMenu:\n";
+        std::cout << "1. Add a new task\n";
+        std::cout << "2. Mark a task as completed\n";
+        std::cout << "3. Remove a task\n";
+        std::cout << "4. View tasks\n";
+        std::cout << "5. Quit\n";
+        std::cout << "Enter your choice: ";
+        std::cin >> choice;
+
+        switch (choice) {
+            case 1:
+                addTask();
+                break;
+            case 2:
+                markTaskCompleted();
+                break;
+            case 3:
+                removeTask();
+                break;
+            case 4:
+                viewTasks();
+                break;
+            case 5:
+                return 0;
+            default:
+                std::cout << "Invalid choice. Please try again.\n";
+        }
+    }
+
+    return 0;
+}
